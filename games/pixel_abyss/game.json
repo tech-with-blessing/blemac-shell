@@ -1,0 +1,12 @@
+{
+    "id":           "pixel_abyss",
+    "title":        "PIXEL ABYSS",
+    "version":      "v3.8",
+    "author":       "TheAntidote / BLEMAC",
+    "description":  "4-player chaotic platformer. Jump, fight, survive the abyss.",
+    "entry":        "main.py",
+    "icon":         "icon.png",
+    "tags":         ["platformer", "multiplayer", "blemac"],
+    "orientation":  "landscape",
+    "touch_profile": "platformer"
+}

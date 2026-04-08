@@ -1,0 +1,12 @@
+{
+    "id":           "demo_snake",
+    "title":        "SNAKE",
+    "version":      "v1.0",
+    "author":       "BLEMAC",
+    "description":  "Classic snake. D-pad to steer, don't bite yourself!",
+    "entry":        "main.py",
+    "icon":         null,
+    "tags":         ["arcade", "classic", "demo"],
+    "orientation":  "portrait",
+    "touch_profile": "dpad"
+}

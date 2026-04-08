@@ -1,0 +1,74 @@
+name: Build BLEMAC Shell APK
+
+# Triggers: push to main, or run manually from GitHub Actions tab
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:   # ← "Run workflow" button on GitHub
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-22.04   # Free GitHub runner (2 CPU, 7GB RAM)
+    timeout-minutes: 60
+
+    steps:
+      # ── 1. Get your code ────────────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── 2. Python 3.10 (Buildozer works best with this) ────────────────────
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      # ── 3. System dependencies Buildozer needs ──────────────────────────────
+      - name: Install system deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y \
+            git zip unzip \
+            openjdk-17-jdk \
+            libffi-dev libssl-dev \
+            build-essential ccache \
+            libltdl-dev zlib1g-dev
+
+      # ── 4. Buildozer + Cython ───────────────────────────────────────────────
+      - name: Install Buildozer
+        run: |
+          pip install --upgrade pip
+          pip install buildozer cython==0.29.36
+
+      # ── 5. Cache Android NDK/SDK so repeat builds are fast ──────────────────
+      #     First build: ~30 min (downloads ~3GB)
+      #     Cached builds: ~8-12 min
+      - name: Cache Buildozer global directory
+        uses: actions/cache@v4
+        with:
+          path: ~/.buildozer
+          key: buildozer-${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
+          restore-keys: |
+            buildozer-${{ runner.os }}-
+
+      # ── 6. Build the APK ─────────────────────────────────────────────────────
+      - name: Build debug APK
+        run: |
+          buildozer android debug 2>&1 | tee build.log
+          echo "BUILD EXIT CODE: $?"
+
+      # ── 7. Upload APK as downloadable artifact ──────────────────────────────
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: blemac-shell-apk
+          path: bin/*.apk
+          retention-days: 30   # APK stays downloadable for 30 days
+
+      # ── 8. Upload build log in case of errors ───────────────────────────────
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          retention-days: 7
