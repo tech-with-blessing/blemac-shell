@@ -23,7 +23,7 @@ p4a.python_version = 3.10
 # Do not mix pygame and kivy requirements as they create backend conflicts.
 requirements = python3,kivy==2.3.0
 
-# ── Android config ───────────────────────────────────────────────────────────
+# ── Android config ─────────────────────────────────────────────────────────────
 android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,INTERNET,MANAGE_EXTERNAL_STORAGE
 android.api         = 33
 android.minapi      = 24
