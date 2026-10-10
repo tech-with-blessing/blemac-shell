@@ -14,15 +14,17 @@ source.include_patterns = assets/*,games/*,shell/*,sdk/*
 main.py         = main.py
 
 # ── Python & Requirements ──────────────────────────────────────────────────────
-# python-for-android (p4a) provides CPython + SDL2 + pygame on Android
-requirements = python3,kivy==2.3.0,pygame,sdl2,sdl2_image,sdl2_mixer,sdl2_ttf
+# python-for-android automatically manages SDL2 binaries for Kivy 2.3.0.
+# Do not mix pygame and kivy requirements as they create backend conflicts.
+requirements = python3,kivy==2.3.0
 
 # ── Android config ────────────────────────────────────────────────────────────
 android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,INTERNET,MANAGE_EXTERNAL_STORAGE
 android.api         = 33
 android.minapi      = 24
 android.ndk         = 25b
-android.sdk         = 33
+# android.sdk is deprecated and ignored by modern Buildozer. It relies on android.api instead.
+# android.sdk         = 33
 android.accept_sdk_license = True
 
 # Orientation: games can override this at runtime
@@ -54,7 +56,7 @@ warn_on_root = 1
 #   buildozer android debug
 #
 # Output:
-#   bin/blemacshell-1.0.0-debug.apk
+#   .buildozer/bin/blemacshell-1.0.0-debug.apk
 #
 # Install to phone (USB debugging on):
 #   buildozer android deploy run
