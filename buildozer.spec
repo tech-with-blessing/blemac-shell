@@ -14,12 +14,15 @@ source.include_patterns = assets/*,games/*,shell/*,sdk/*
 main.py         = main.py
 
 # ── Python & Requirements ──────────────────────────────────────────────────────
-# Kivy 2.3.0 is not compatible with Python 3.14's C-API changes
-# (_PyLong_AsByteArray signature changed in Python 3.14), which is why Android builds fail.
-# Pin the Python-for-Android target version to 3.10 to match the supported toolchain.
+# Kivy 2.3.0 is not compatible with Python 3.14's C-API changes.
+# The generated C code from Kivy 2.3.0 calls _PyLong_AsByteArray with the older
+# signature, which breaks on Python 3.14. Keep the Android target on Python 3.10.
 p4a.python_version = 3.10
 
-# python-for-android automatically manages SDL2 binaries for Kivy 2.3.0.
+# Use the SDL2 bootstrap that matches Kivy's default Android backend.
+android.bootstrap = sdl2
+
+# python-for-android automatically manages the SDL2 binaries for Kivy 2.3.0.
 # Do not mix pygame and kivy requirements as they create backend conflicts.
 requirements = python3,kivy==2.3.0
 
