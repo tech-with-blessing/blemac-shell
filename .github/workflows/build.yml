@@ -53,16 +53,23 @@ jobs:
       # ── 6. Build the APK ─────────────────────────────────────────────────────
       - name: Build debug APK
         run: |
+          # Run buildozer. PIPESTATUS[0] catches the actual buildozer exit code instead of tee
           buildozer android debug 2>&1 | tee build.log
-          echo "BUILD EXIT CODE: $?"
+          if [ ${PIPESTATUS[0]} -ne 0 ]; then
+            echo "Buildozer failed!"
+            exit 1
+          fi
 
       # ── 7. Upload APK as downloadable artifact ──────────────────────────────
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: blemac-shell-apk
-          path: bin/*.apk
-          retention-days: 30   # APK stays downloadable for 30 days
+          # Buildozer defaults to copying the final APK here, or deep inside .buildozer
+          path: |
+            .buildozer/bin/*.apk
+            .buildozer/android/platform/**/build/outputs/apk/**/*.apk
+          retention-days: 30
 
       # ── 8. Upload build log in case of errors ───────────────────────────────
       - name: Upload build log
@@ -71,4 +78,3 @@ jobs:
         with:
           name: build-log
           path: build.log
-          retention-days: 7
