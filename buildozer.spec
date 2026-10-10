@@ -1,12 +1,12 @@
 [app]
 
-# ── Identity ───────────────────────────────────────────────────────────────────
+# ── Identity ─────────────────────────────────────────────────────────────
 title           = BLEMAC Shell
 package.name    = blemacshell
 package.domain  = org.blemac
 version         = 1.0.0
 
-# ── Entry point ────────────────────────────────────────────────────────────────
+# ── Entry point ──────────────────────────────────────────────────────────
 source.dir      = .
 source.include_exts = py,png,jpg,jpeg,json,ttf,ogg,wav,mp3,kv
 source.include_patterns = assets/*,games/*,shell/*,sdk/*
@@ -14,11 +14,16 @@ source.include_patterns = assets/*,games/*,shell/*,sdk/*
 main.py         = main.py
 
 # ── Python & Requirements ──────────────────────────────────────────────────────
+# Kivy 2.3.0 is not compatible with Python 3.14's C-API changes
+# (_PyLong_AsByteArray signature changed in Python 3.14), which is why Android builds fail.
+# Pin the Python-for-Android target version to 3.10 to match the supported toolchain.
+p4a.python_version = 3.10
+
 # python-for-android automatically manages SDL2 binaries for Kivy 2.3.0.
 # Do not mix pygame and kivy requirements as they create backend conflicts.
 requirements = python3,kivy==2.3.0
 
-# ── Android config ────────────────────────────────────────────────────────────
+# ── Android config ───────────────────────────────────────────────────────────
 android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,INTERNET,MANAGE_EXTERNAL_STORAGE
 android.api         = 33
 android.minapi      = 24
@@ -33,21 +38,21 @@ orientation         = portrait
 # Allow landscape when game requests it
 android.allow_backup = True
 
-# ── Screen ────────────────────────────────────────────────────────────────────
+# ── Screen ────────────────────────────────────────────────────────────────
 # Fullscreen — the shell manages its own chrome
 fullscreen          = 1
 
-# ── Icons ─────────────────────────────────────────────────────────────────────
+# ── Icons ────────────────────────────────────────────────────────────────
 # icon.filename = %(source.dir)s/assets/icon.png
 # presplash.filename = %(source.dir)s/assets/splash.png
 # presplash.color = #080A14
 
-# ── Build ─────────────────────────────────────────────────────────────────────
+# ── Build ────────────────────────────────────────────────────────────────
 [buildozer]
 log_level   = 2
 warn_on_root = 1
 
-# ── HOW TO BUILD ──────────────────────────────────────────────────────────────
+# ── HOW TO BUILD ──────────────────────────────────────────────────────────
 # Prerequisites (Ubuntu/WSL):
 #   sudo apt install -y git zip unzip openjdk-17-jdk python3-pip
 #   pip install buildozer cython
